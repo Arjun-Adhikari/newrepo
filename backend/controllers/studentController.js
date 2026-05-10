@@ -62,14 +62,14 @@ export const getStudents = async (req, res) => {
     const students = await Student.findAll({
       include: [
         {
-          model: sequelize.models.Subject,
+          model: sequelize.models.subject,
           as: "enrolledSubjects",
           through: {
             attributes: [],
           },
         },
         {
-          model: sequelize.models.School,
+          model: sequelize.models.school,
           as: "school",
         },
       ],
