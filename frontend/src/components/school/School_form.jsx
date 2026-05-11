@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-
-const API_BASE = 'http://localhost:3000/api';
+import { useState } from 'react';
+import api from '../../api/api.js';
 
 const SchoolForm = () => {
   const [formData, setFormData] = useState({
@@ -25,7 +23,7 @@ const SchoolForm = () => {
     setSuccess('');
 
     try {
-      const response = await axios.post(`${API_BASE}/schools/add`, formData);
+      const response = await api.post('schools/add', formData);
       setSuccess(response.data.message || 'School added successfully!');
       setFormData({ school_name: '', school_address: '' });
     } catch (err) {

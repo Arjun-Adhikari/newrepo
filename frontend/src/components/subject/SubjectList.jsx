@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import api from '../../api/api';
 
 const SubjectList = () => {
@@ -12,25 +12,27 @@ const SubjectList = () => {
   const [editError, setEditError] = useState('');
   const [editSuccess, setEditSuccess] = useState('');
 
-  const fetchSubjects = async () => {
+  const fetchSubjects = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
-      const res = await api.get('/subjects/all');
+      const res = await api.get('subjects/all');
       setSubjects(res.data.data || []);
     } catch {
       setError('Failed to load subjects.');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  useEffect(() => { fetchSubjects(); }, []);
+  useEffect(() => {
+    void Promise.resolve().then(() => void fetchSubjects());
+  }, [fetchSubjects]);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this subject?')) return;
     try {
-      await api.delete(`/subjects/${id}`);
+      await api.delete(`subjects/${id}`);
       fetchSubjects();
     } catch (err) {
       alert(err.response?.data?.message || 'Error deleting subject.');
@@ -50,7 +52,7 @@ const SubjectList = () => {
     setEditError('');
     setEditSuccess('');
     try {
-      await api.put(`/subjects/${editingSubject.subject_id}`, editForm);
+      await api.put(`subjects/${editingSubject.subject_id}`, editForm);
       setEditSuccess('Subject updated successfully!');
       fetchSubjects();
       setTimeout(() => setEditingSubject(null), 1000);

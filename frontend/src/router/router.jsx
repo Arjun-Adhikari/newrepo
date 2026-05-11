@@ -3,19 +3,32 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import HelloForm from '../components/hello.jsx'; // Fixed the lowercase 'f'
 import App from "../App.jsx";
-import Appdata from '../components/Adddata.jsx'
-import ManageData from '../components/ManageData.jsx';
+import Appdata from "../components/Adddata.jsx";
+import ManageData from "../components/ManageData.jsx";
+import Login from "../pages/Login.jsx";
+import Signup from "../pages/Signup.jsx";
+import ProtectedRoute from "../components/ProtectedRoute.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<App />}>
-      <Route index element={<Appdata/>}/>
-      <Route path="/hello" element={<HelloForm />} />
-      <Route path="/manage" element={<ManageData />} />
-      <Route path="*" element={<div>Not Found</div>} />
-    </Route>
+    <>
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <App />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Appdata />} />
+        <Route path="/manage" element={<ManageData />} />
+        <Route path="*" element={<div>Not Found</div>} />
+      </Route>
+    </>
   )
 );
 

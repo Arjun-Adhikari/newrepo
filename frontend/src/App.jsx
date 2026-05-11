@@ -1,17 +1,11 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import heroImg from "./assets/hero.png";
-import "./App.css";
-import { Outlet } from "react-router-dom";
-function App() {
-  const [count, setCount] = useState(0);
+import { Outlet } from 'react-router-dom';
+import Navbar from './components/Navbar';
 
+export default function App() {
   return (
-    <>
-      <Outlet/>
-    </>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <Outlet />
+    </div>
   );
 }
-
-export default App;

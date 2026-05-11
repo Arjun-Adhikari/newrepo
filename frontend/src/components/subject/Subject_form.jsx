@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-
-const API_BASE = 'http://localhost:3000/api';
+import { useState } from 'react';
+import api from '../../api/api.js';
 
 const SubjectForm = () => {
   const [formData, setFormData] = useState({ subject_name: '' });
@@ -22,7 +20,7 @@ const SubjectForm = () => {
     setSuccess('');
 
     try {
-      const response = await axios.post(`${API_BASE}/subjects/add`, formData);
+      const response = await api.post('subjects/add', formData);
       setSuccess(response.data.message || 'Subject added successfully!');
       setFormData({ subject_name: '' });
     } catch (err) {

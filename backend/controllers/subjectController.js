@@ -2,10 +2,8 @@ import sequelize from "../DB/Db.js";
 import initModels from "../models/init.model.js";
 import { UniqueConstraintError } from "sequelize";
 
-const { Subject } = initModels(sequelize);
-
 export const addSubject = async (req, res) => {
-  console.log("Received request to add subject with data:", req.body);
+  const { Subject } = initModels(sequelize);
   try {
     const { subject_name } = req.body;
 
@@ -34,6 +32,7 @@ export const addSubject = async (req, res) => {
 };
 
 export const getSubjects = async (req, res) => {
+  const { Subject } = initModels(sequelize);
   try {
     const subjects = await Subject.findAll();
     res.status(200).json({
@@ -48,6 +47,7 @@ export const getSubjects = async (req, res) => {
 };
 
 export const getSubject = async (req, res) => {
+  const { Subject } = initModels(sequelize);
   try {
     const { id } = req.params;
     const subject = await Subject.findByPk(id);
@@ -67,8 +67,8 @@ export const getSubject = async (req, res) => {
 };
 
 export const updateSubjectInfo = async (req, res) => {
+  const { Subject } = initModels(sequelize);
   try {
-    console.log(req.body);
     const { id } = req.params;
     const { subject_name } = req.body;
 
@@ -94,13 +94,14 @@ export const updateSubjectInfo = async (req, res) => {
 };
 
 export const removeSubject = async (req, res) => {
+  const { Subject } = initModels(sequelize);
   try {
     const { id } = req.params;
     if (isNaN(parseInt(id))) {
       return res.status(400).json({ message: "Invalid subject ID provided" });
     }
 
-    const subject = await Subject.findByPk(id);
+    const subject = await Subject.findByPk(parseInt(id, 10));
     if (!subject) {
       return res.status(404).json({ message: "Subject not found" });
     }

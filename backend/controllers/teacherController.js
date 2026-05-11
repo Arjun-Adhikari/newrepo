@@ -2,10 +2,8 @@ import sequelize from "../DB/Db.js";
 import initModels from "../models/init.model.js";
 import { UniqueConstraintError } from "sequelize";
 
-const { Teacher } = initModels(sequelize);
-
 export const addTeacher = async (req, res) => {
-  console.log("Received request to add teacher with data:", req.body);
+  const { Teacher } = initModels(sequelize);
   try {
     const { teacher_name, subject_id, school_id } = req.body;
 
@@ -36,15 +34,16 @@ export const addTeacher = async (req, res) => {
 };
 
 export const getTeachers = async (req, res) => {
+  const { Teacher, Subject, School } = initModels(sequelize);
   try {
     const teachers = await Teacher.findAll({
       include: [
         {
-          model: sequelize.models.subject,
+          model: Subject,
           as: "specialty",
         },
         {
-          model: sequelize.models.school,
+          model: School,
           as: "workplace",
         },
       ],
@@ -61,17 +60,18 @@ export const getTeachers = async (req, res) => {
 };
 
 export const getTeacher = async (req, res) => {
+  const { Teacher, Subject, School } = initModels(sequelize);
   try {
     const { id } = req.params;
     const teacher = await Teacher.findOne({
       where: { teacher_id: parseInt(id) },
       include: [
         {
-          model: sequelize.models.Subject,
+          model: Subject,
           as: "specialty",
         },
         {
-          model: sequelize.models.School,
+          model: School,
           as: "workplace",
         },
       ],
@@ -92,6 +92,7 @@ export const getTeacher = async (req, res) => {
 };
 
 export const updateTeacherInfo = async (req, res) => {
+  const { Teacher } = initModels(sequelize);
   try {
     const { id } = req.params;
     const { teacher_name, subject_id, school_id } = req.body;
@@ -100,7 +101,7 @@ export const updateTeacherInfo = async (req, res) => {
       return res.status(400).json({ message: "Invalid teacher ID provided" });
     }
 
-    const teacher = await Teacher.findByPk(id);
+    const teacher = await Teacher.findByPk(parseInt(id, 10));
 
     if (!teacher) {
       return res.status(404).json({ message: "Teacher not found" });
@@ -108,7 +109,7 @@ export const updateTeacherInfo = async (req, res) => {
 
     await Teacher.update(
       { teacher_name, subject_id, school_id },
-      { where: { teacher_id: parseInt(id) } },
+      { where: { teacher_id: parseInt(id, 10) } },
     );
 
     res.status(200).json({
@@ -122,13 +123,14 @@ export const updateTeacherInfo = async (req, res) => {
 };
 
 export const removeTeacher = async (req, res) => {
+  const { Teacher } = initModels(sequelize);
   try {
     const { id } = req.params;
     if (isNaN(parseInt(id))) {
       return res.status(400).json({ message: "Invalid teacher ID provided" });
     }
 
-    const teacher = await Teacher.findByPk(id);
+    const teacher = await Teacher.findByPk(parseInt(id, 10));
     if (!teacher) {
       return res.status(404).json({ message: "Teacher not found" });
     }

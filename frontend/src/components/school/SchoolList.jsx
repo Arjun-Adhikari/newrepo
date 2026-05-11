@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import api from '../../api/api';
 
 const SchoolList = () => {
@@ -6,32 +6,33 @@ const SchoolList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Edit modal state
   const [editingSchool, setEditingSchool] = useState(null);
   const [editForm, setEditForm] = useState({ school_name: '', school_address: '' });
   const [editLoading, setEditLoading] = useState(false);
   const [editError, setEditError] = useState('');
   const [editSuccess, setEditSuccess] = useState('');
 
-  const fetchSchools = async () => {
+  const fetchSchools = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
-      const res = await api.get('/schools/all');
+      const res = await api.get('schools/all');
       setSchools(res.data.data || []);
     } catch {
       setError('Failed to load schools.');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  useEffect(() => { fetchSchools(); }, []);
+  useEffect(() => {
+    void Promise.resolve().then(() => void fetchSchools());
+  }, [fetchSchools]);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this school?')) return;
     try {
-      await api.delete(`/schools/${id}`);
+      await api.delete(`schools/${id}`);
       fetchSchools();
     } catch (err) {
       alert(err.response?.data?.message || 'Error deleting school.');
@@ -51,7 +52,7 @@ const SchoolList = () => {
     setEditError('');
     setEditSuccess('');
     try {
-      await api.put(`/schools/${editingSchool.school_id}`, editForm);
+      await api.put(`schools/${editingSchool.school_id}`, editForm);
       setEditSuccess('School updated successfully!');
       fetchSchools();
       setTimeout(() => setEditingSchool(null), 1000);

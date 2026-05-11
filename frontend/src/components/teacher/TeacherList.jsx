@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import api from '../../api/api';
 
 const TeacherList = () => {
@@ -14,14 +14,14 @@ const TeacherList = () => {
   const [editError, setEditError] = useState('');
   const [editSuccess, setEditSuccess] = useState('');
 
-  const fetchAll = async () => {
+  const fetchAll = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
       const [tRes, sRes, subRes] = await Promise.all([
-        api.get('/teachers/all'),
-        api.get('/schools/all'),
-        api.get('/subjects/all'),
+        api.get('teachers/all'),
+        api.get('schools/all'),
+        api.get('subjects/all'),
       ]);
       setTeachers(tRes.data.data || []);
       setSchools(sRes.data.data || []);
@@ -31,14 +31,16 @@ const TeacherList = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  useEffect(() => { fetchAll(); }, []);
+  useEffect(() => {
+    void Promise.resolve().then(() => void fetchAll());
+  }, [fetchAll]);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this teacher?')) return;
     try {
-      await api.delete(`/teachers/${id}`);
+      await api.delete(`teachers/${id}`);
       fetchAll();
     } catch (err) {
       alert(err.response?.data?.message || 'Error deleting teacher.');
@@ -62,7 +64,7 @@ const TeacherList = () => {
     setEditError('');
     setEditSuccess('');
     try {
-      await api.put(`/teachers/${editingTeacher.teacher_id}`, {
+      await api.put(`teachers/${editingTeacher.teacher_id}`, {
         teacher_name: editForm.teacher_name,
         school_id: parseInt(editForm.school_id),
         subject_id: parseInt(editForm.subject_id),

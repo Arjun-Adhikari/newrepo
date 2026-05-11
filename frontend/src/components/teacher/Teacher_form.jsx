@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-
-const API_BASE = 'http://localhost:3000/api';
+import { useState, useEffect } from 'react';
+import api from '../../api/api.js';
 
 const TeacherForm = () => {
   const [formData, setFormData] = useState({
@@ -17,12 +15,12 @@ const TeacherForm = () => {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    axios.get(`${API_BASE}/schools/all`)
-      .then(res => setSchools(res.data.data || []))
+    api.get('schools/all')
+      .then((res) => setSchools(res.data.data || []))
       .catch(() => setError('Failed to load schools.'));
 
-    axios.get(`${API_BASE}/subjects/all`)
-      .then(res => setSubjects(res.data.data || []))
+    api.get('subjects/all')
+      .then((res) => setSubjects(res.data.data || []))
       .catch(() => setError('Failed to load subjects.'));
   }, []);
 
@@ -39,7 +37,7 @@ const TeacherForm = () => {
     setSuccess('');
 
     try {
-      const response = await axios.post(`${API_BASE}/teachers/add`, {
+      const response = await api.post('teachers/add', {
         teacher_name: formData.teacher_name,
         subject_id: parseInt(formData.subject_id),
         school_id: parseInt(formData.school_id),

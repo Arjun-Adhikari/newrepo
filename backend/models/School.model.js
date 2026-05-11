@@ -5,8 +5,8 @@ const SchoolModel = (sequelize) => {
     "school",
     {
       school_id: {
-        autoIncrement: true, // Let the database generate the ID
-        type: DataTypes.INTEGER, // Changed to INTEGER to match Student and Teacher
+        autoIncrement: true,
+        type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
       },
@@ -25,7 +25,7 @@ const SchoolModel = (sequelize) => {
     }
   );
 
-  return School; // <--- DO NOT REMOVE THIS LINE! It is required to prevent the crash.
+  return School;
 };
 
 export default SchoolModel;

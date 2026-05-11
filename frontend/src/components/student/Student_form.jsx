@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-
-const API_BASE = 'http://localhost:3000/api';
+import { useState, useEffect } from 'react';
+import api from '../../api/api.js';
 
 const StudentForm = () => {
   const [formData, setFormData] = useState({
@@ -19,14 +17,13 @@ const StudentForm = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Fetch schools and subjects on mount for dropdowns
   useEffect(() => {
-    axios.get(`${API_BASE}/schools/all`)
-      .then(res => setSchools(res.data.data || []))
+    api.get('schools/all')
+      .then((res) => setSchools(res.data.data || []))
       .catch(() => setError('Failed to load schools.'));
 
-    axios.get(`${API_BASE}/subjects/all`)
-      .then(res => setSubjects(res.data.data || []))
+    api.get('subjects/all')
+      .then((res) => setSubjects(res.data.data || []))
       .catch(() => setError('Failed to load subjects.'));
   }, []);
 
@@ -36,7 +33,6 @@ const StudentForm = () => {
     setSuccess('');
   };
 
-  // Toggle a subject in/out of subject_ids array
   const handleSubjectToggle = (subjectId) => {
     setFormData(prev => {
       const already = prev.subject_ids.includes(subjectId);
@@ -64,7 +60,7 @@ const StudentForm = () => {
     setSuccess('');
 
     try {
-      const response = await axios.post(`${API_BASE}/students/add`, {
+      const response = await api.post('students/add', {
         first_name: formData.first_name,
         last_name: formData.last_name,
         address: formData.address,

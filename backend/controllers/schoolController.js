@@ -1,9 +1,8 @@
 import sequelize from "../DB/Db.js";
 import initModels from "../models/init.model.js";
 
-const { School } = initModels(sequelize);
-
 export const addSchool = async (req, res) => {
+  const { School } = initModels(sequelize);
   try {
     const { school_name, school_address } = req.body;
 
@@ -12,8 +11,8 @@ export const addSchool = async (req, res) => {
     }
 
     const school = await School.create({
-      school_name: school_name, // Key must match Model
-      school_address: school_address, // Key must match Model
+      school_name,
+      school_address,
     });
 
     res.status(201).json({
@@ -26,6 +25,7 @@ export const addSchool = async (req, res) => {
 };
 
 export const getSchools = async (req, res) => {
+  const { School } = initModels(sequelize);
   try {
     const schools = await School.findAll();
     res.status(200).json({
@@ -40,6 +40,7 @@ export const getSchools = async (req, res) => {
 };
 
 export const getSchool = async (req, res) => {
+  const { School } = initModels(sequelize);
   try {
     const { id } = req.params;
     const school = await School.findByPk(id);
@@ -59,6 +60,7 @@ export const getSchool = async (req, res) => {
 };
 
 export const updateSchoolInfo = async (req, res) => {
+  const { School } = initModels(sequelize);
   try {
     const { id } = req.params;
     const { school_name, school_address } = req.body;
@@ -88,6 +90,7 @@ export const updateSchoolInfo = async (req, res) => {
 };
 
 export const removeSchool = async (req, res) => {
+  const { School } = initModels(sequelize);
   try {
     const { id } = req.params;
     if (isNaN(parseInt(id))) {

@@ -2,10 +2,8 @@ import sequelize from "../DB/Db.js";
 import initModels from "../models/init.model.js";
 import { UniqueConstraintError } from "sequelize";
 
-const { Student } = initModels(sequelize);
-
 export const addStudent = async (req, res) => {
-  console.log(req.body);
+  const { Student } = initModels(sequelize);
   try {
     const {
       first_name,
@@ -58,18 +56,19 @@ export const addStudent = async (req, res) => {
 };
 
 export const getStudents = async (req, res) => {
+  const { Student, Subject, School } = initModels(sequelize);
   try {
     const students = await Student.findAll({
       include: [
         {
-          model: sequelize.models.subject,
+          model: Subject,
           as: "enrolledSubjects",
           through: {
             attributes: [],
           },
         },
         {
-          model: sequelize.models.school,
+          model: School,
           as: "school",
         },
       ],
@@ -86,20 +85,21 @@ export const getStudents = async (req, res) => {
 };
 
 export const getStudent = async (req, res) => {
+  const { Student, Subject, School } = initModels(sequelize);
   try {
     const { id } = req.params;
     const student = await Student.findOne({
       where: { student_id: parseInt(id) },
       include: [
         {
-          model: sequelize.models.Subject,
+          model: Subject,
           as: "enrolledSubjects",
           through: {
             attributes: [],
           },
         },
         {
-          model: sequelize.models.School,
+          model: School,
           as: "school",
         },
       ],
@@ -118,6 +118,7 @@ export const getStudent = async (req, res) => {
 };
 
 export const updateStudentInfo = async (req, res) => {
+  const { Student } = initModels(sequelize);
   try {
     const { id } = req.params;
     const {
@@ -171,6 +172,7 @@ export const updateStudentInfo = async (req, res) => {
 };
 
 export const removeStudent = async (req, res) => {
+  const { Student } = initModels(sequelize);
   try {
     const { id } = req.params;
     if (isNaN(parseInt(id))) {

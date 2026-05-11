@@ -4,7 +4,7 @@ const TeacherModel = (sequelize) => {
   const Teacher = sequelize.define(
     "teacher",
     {
-      teacher_id: { // <-- Changed from Teacher_id to teacher_id
+      teacher_id: {
         autoIncrement: true,
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -32,7 +32,7 @@ const TeacherModel = (sequelize) => {
           name: "PRIMARY",
           unique: true,
           using: "BTREE",
-          fields: [{ name: "teacher_id" }], // <-- Changed here too
+          fields: [{ name: "teacher_id" }],
         },
       ],
     },
