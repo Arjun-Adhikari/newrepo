@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import api from '../../api/api';
+import StudentContactQR from '../../StudentContactQR/StudentContactQR';
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
@@ -7,6 +8,7 @@ const StudentList = () => {
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [qrStudent, setQrStudent] = useState(null);
 
   const [editingStudent, setEditingStudent] = useState(null);
   const [editForm, setEditForm] = useState({
@@ -134,7 +136,17 @@ const StudentList = () => {
                 </div>
               )}
             </div>
+
             <div className="flex gap-2 ml-4 shrink-0">
+
+              <button
+                onClick={() => setQrStudent(student)}
+                className="px-3 py-1.5 text-sm bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 font-medium transition-colors"
+              >
+                QR
+              </button>
+
+
               <button
                 onClick={() => openEdit(student)}
                 className="px-3 py-1.5 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 font-medium transition-colors"
@@ -268,6 +280,34 @@ const StudentList = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {qrStudent && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 overflow-y-auto py-8">
+          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 relative">
+            
+            {/* Close Button */}
+            <button 
+              onClick={() => setQrStudent(null)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 font-bold"
+            >
+              ✕
+            </button>
+
+            {/* Render the QR Component, passing the selected student */}
+            <StudentContactQR student={qrStudent} />
+
+            <div className="mt-6 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setQrStudent(null)}
+                className="w-full py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-lg transition-colors"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
